@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NoCap AI — No filters. Just truth.</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0C1116;
+    --surface: #141B22;
+    --surface2: #1C2530;
+    --border: rgba(255,255,255,0.07);
+    --border-strong: rgba(255,255,255,0.13);
+    --orange: #FF5F1F;
+    --orange-dim: rgba(255,95,31,0.1);
+    --text: #F0F0F0;
+    --text-muted: #8B9099;
+    --text-faint: #3E4750;
+    --radius: 14px;
+    --radius-sm: 9px;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    padding-bottom: 4rem;
+  }
+
+  /* NAV */
+  nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.25rem 2rem;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    background: rgba(12,17,22,0.94);
+    backdrop-filter: blur(16px);
+    z-index: 100;
+  }
+
+  .logo {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 19px;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    color: var(--text);
+  }
+
+  .logo span { color: var(--orange); }
+
+  .nav-right { display: flex; align-items: center; gap: 10px; }
+
+  .uses-badge {
+    font-size: 12px;
+    color: var(--text-muted);
+    background: var(--surface);
+    border: 1px solid var(--border-strong);
+    padding: 5px 12px;
+    border-radius: 20px;
+    white-space: nowrap;
+  }
+
+  .upgrade-nav {
+    font-size: 13px;
+    font-weight: 700;
+    font-family: 'Space Grotesk', sans-serif;
+    background: var(--orange);
+    color: white;
+    padding: 6px 16px;
+    border-radius: var(--radius-sm);
+    border: none;
+    cursor: pointer;
+    transition: opacity 0.15s;
+    white-space: nowrap;
+  }
+
+  .upgrade-nav:hover { opacity: 0.88; }
+
+  /* HERO */
+  .hero {
+    text-align: center;
+    padding: 4rem 2rem 3rem;
+    max-width: 680px;
+    margin: 0 auto;
+  }
+
+  .hero-eyebrow {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--orange);
+    margin-bottom: 1.25rem;
+  }
+
+  .hero h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(34px, 6vw, 58px);
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    line-height: 1.06;
+    margin-bottom: 1.1rem;
+  }
+
+  .hero h1 em {
+    font-style: normal;
+    color: var(--orange);
+  }
+
+  .hero-sub {
+    font-size: 16px;
+    color: var(--text-muted);
+    line-height: 1.75;
+    max-width: 460px;
+    margin: 0 auto;
+  }
+
+  /* TOOLS */
+  .tools-wrapper {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 0 1.5rem 2rem;
+  }
+
+  .tool-tabs {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 1.25rem;
+  }
+
+  .tool-tab {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.25rem 1rem 1rem;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+    text-align: left;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .tool-tab::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--orange);
+    transform: scaleX(0);
+    transition: transform 0.2s;
+    transform-origin: left;
+  }
+
+  .tool-tab.active { border-color: rgba(255,95,31,0.3); background: var(--surface2); }
+  .tool-tab.active::after { transform: scaleX(1); }
+  .tool-tab:hover:not(.active) { border-color: var(--border-strong); }
+
+  .tool-used-indicator {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--orange);
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .tool-used-indicator.show { opacity: 1; }
+
+  .tool-emoji { font-size: 22px; display: block; margin-bottom: 8px; }
+
+  .tool-name {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 4px;
+    letter-spacing: -0.01em;
+  }
+
+  .tool-desc { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
+
+  /* INPUT */
+  .input-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin-bottom: 10px;
+    transition: border-color 0.2s;
+  }
+
+  .input-card:focus-within { border-color: rgba(255,95,31,0.3); }
+
+  .input-label {
+    padding: 14px 16px 0;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+  }
+
+  .main-textarea {
+    width: 100%;
+    min-height: 130px;
+    padding: 10px 16px 16px;
+    background: transparent;
+    border: none;
+    outline: none;
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    color: var(--text);
+    resize: vertical;
+    line-height: 1.7;
+  }
+
+  .main-textarea::placeholder { color: var(--text-faint); }
+
+  /* GENERATE */
+  .generate-btn {
+    width: 100%;
+    padding: 15px;
+    background: var(--orange);
+    color: white;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: opacity 0.15s, transform 0.1s;
+    margin-bottom: 1.25rem;
+  }
+
+  .generate-btn:hover { opacity: 0.9; }
+  .generate-btn:active { transform: scale(0.99); }
+  .generate-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+  /* LOADING */
+  .loading-state { display: none; text-align: center; padding: 2.5rem 1rem; }
+  .loading-state.visible { display: block; }
+
+  .loading-dots { display: flex; gap: 7px; justify-content: center; margin-bottom: 14px; }
+
+  .loading-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--orange);
+    animation: ldot 1.4s infinite;
+  }
+
+  .loading-dot:nth-child(2) { animation-delay: 0.2s; }
+  .loading-dot:nth-child(3) { animation-delay: 0.4s; }
+
+  @keyframes ldot {
+    0%, 80%, 100% { transform: scale(0.55); opacity: 0.35; }
+    40% { transform: scale(1); opacity: 1; }
+  }
+
+  .loading-text { font-size: 14px; color: var(--text-muted); font-style: italic; }
+
+  /* RESULT */
+  .result-card { display: none; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin-bottom: 1.5rem; }
+  .result-card.visible { display: block; animation: fadeUp 0.3s ease; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .result-header {
+    padding: 12px 16px;
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .verdict-badge {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 4px 12px;
+    border-radius: 5px;
+  }
+
+  .badge-roast { background: rgba(255,80,80,0.15); color: #FF7070; }
+  .badge-rate { background: rgba(255,200,0,0.13); color: #FFD000; }
+  .badge-fight { background: rgba(74,222,128,0.12); color: #4ADE80; }
+
+  .copy-btn {
+    font-size: 12px;
+    color: var(--text-muted);
+    background: none;
+    border: 1px solid var(--border-strong);
+    border-radius: 6px;
+    padding: 4px 12px;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    transition: color 0.15s, border-color 0.15s;
+  }
+
+  .copy-btn:hover { color: var(--text); border-color: var(--text-muted); }
+
+  .result-body {
+    padding: 1.5rem;
+    font-size: 14px;
+    color: var(--text);
+    line-height: 1.9;
+    white-space: pre-wrap;
+    min-height: 60px;
+  }
+
+  .cursor-blink {
+    display: inline-block;
+    width: 2px;
+    height: 15px;
+    background: var(--orange);
+    margin-left: 2px;
+    vertical-align: middle;
+    animation: blink 0.7s infinite;
+  }
+
+  @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+  .result-footer {
+    padding: 12px 16px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    gap: 8px;
+  }
+
+  .try-again-btn {
+    font-size: 13px;
+    color: var(--orange);
+    background: none;
+    border: 1px solid rgba(255,95,31,0.25);
+    border-radius: var(--radius-sm);
+    padding: 6px 14px;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    transition: background 0.15s;
+  }
+
+  .try-again-btn:hover { background: var(--orange-dim); }
+
+  /* PAYWALL */
+  .paywall-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.88);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    backdrop-filter: blur(6px);
+  }
+
+  .paywall-overlay.visible { display: flex; }
+
+  .paywall-modal {
+    background: var(--surface);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius);
+    padding: 2.5rem 2rem;
+    max-width: 400px;
+    width: 100%;
+    text-align: center;
+    animation: fadeUp 0.25s ease;
+  }
+
+  .paywall-emoji { font-size: 38px; display: block; margin-bottom: 1rem; }
+
+  .paywall-modal h3 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    margin-bottom: 8px;
+  }
+
+  .paywall-modal p {
+    font-size: 14px;
+    color: var(--text-muted);
+    line-height: 1.7;
+    margin-bottom: 1.5rem;
+  }
+
+  .paywall-price {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 42px;
+    font-weight: 800;
+    color: var(--orange);
+    letter-spacing: -0.05em;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .paywall-period {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 1.5rem;
+  }
+
+  .paywall-features {
+    list-style: none;
+    margin-bottom: 1.75rem;
+    text-align: left;
+    background: var(--surface2);
+    border-radius: var(--radius-sm);
+    padding: 1rem 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .paywall-features li {
+    font-size: 13px;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .paywall-features li::before { content: '✓'; color: var(--orange); font-weight: 700; flex-shrink: 0; }
+
+  .paywall-cta {
+    width: 100%;
+    padding: 14px;
+    background: var(--orange);
+    color: white;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-bottom: 10px;
+    transition: opacity 0.15s;
+  }
+
+  .paywall-cta:hover { opacity: 0.9; }
+
+  .paywall-skip {
+    font-size: 13px;
+    color: var(--text-faint);
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    transition: color 0.15s;
+  }
+
+  .paywall-skip:hover { color: var(--text-muted); }
+
+  /* FOOTER */
+  footer {
+    text-align: center;
+    padding: 2rem;
+    font-size: 12px;
+    color: var(--text-faint);
+    border-top: 1px solid var(--border);
+    margin-top: 2rem;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 580px) {
+    .hero { padding: 2.5rem 1.25rem 2rem; }
+    .hero h1 { font-size: 30px; }
+    .tool-tabs { grid-template-columns: 1fr; }
+    .tools-wrapper { padding: 0 1rem 2rem; }
+    nav { padding: 1rem 1.25rem; }
+    .uses-badge { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">No<span>Cap</span> AI</div>
+  <div class="nav-right">
+    <span class="uses-badge" id="usesBadge">3 free uses left</span>
+    <button class="upgrade-nav" onclick="showPaywall()">Upgrade — $9/mo</button>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-eyebrow">No filters. No sugarcoating.</div>
+  <h1>The AI that tells you<br><em>the truth</em></h1>
+  <p class="hero-sub">Roast your business, validate your idea, or fight your corner — with brutal honesty from an AI that doesn't care about your feelings.</p>
+</div>
+
+<div class="tools-wrapper">
+
+  <div class="tool-tabs">
+    <div class="tool-tab active" id="tab-roast" onclick="selectTool('roast')">
+      <div class="tool-used-indicator" id="ind-roast"></div>
+      <span class="tool-emoji">🔥</span>
+      <div class="tool-name">Roast My Business</div>
+      <div class="tool-desc">Savage but constructive teardown of your business or idea</div>
+    </div>
+    <div class="tool-tab" id="tab-rate" onclick="selectTool('rate')">
+      <div class="tool-used-indicator" id="ind-rate"></div>
+      <span class="tool-emoji">⚡</span>
+      <div class="tool-name">Rate My Idea</div>
+      <div class="tool-desc">Honest verdict on your business idea — risks, score, reality check</div>
+    </div>
+    <div class="tool-tab" id="tab-fight" onclick="selectTool('fight')">
+      <div class="tool-used-indicator" id="ind-fight"></div>
+      <span class="tool-emoji">⚖️</span>
+      <div class="tool-name">Fight My Corner</div>
+      <div class="tool-desc">Professional complaint letters that actually get results</div>
+    </div>
+  </div>
+
+  <div class="input-card">
+    <div class="input-label" id="inputLabel">What are we roasting?</div>
+    <textarea class="main-textarea" id="mainInput" placeholder="Paste your website URL, describe your business, or drop your startup pitch..."></textarea>
+  </div>
+
+  <button class="generate-btn" id="generateBtn" onclick="generate()">
+    <span id="btnEmoji">🔥</span>
+    <span id="btnLabel">Roast it</span>
+  </button>
+
+  <div class="loading-state" id="loadingState">
+    <div class="loading-dots">
+      <div class="loading-dot"></div>
+      <div class="loading-dot"></div>
+      <div class="loading-dot"></div>
+    </div>
+    <p class="loading-text" id="loadingText">Getting brutally honest about your business...</p>
+  </div>
+
+  <div class="result-card" id="resultCard">
+    <div class="result-header">
+      <span class="verdict-badge badge-roast" id="verdictBadge">🔥 Roasted</span>
+      <button class="copy-btn" id="copyBtn" onclick="copyResult()">Copy</button>
+    </div>
+    <div class="result-body" id="resultBody"></div>
+    <div class="result-footer">
+      <button class="try-again-btn" onclick="resetInput()">Try another</button>
+    </div>
+  </div>
+
+</div>
+
+<div class="paywall-overlay" id="paywallOverlay">
+  <div class="paywall-modal">
+    <span class="paywall-emoji">🔓</span>
+    <h3>You've had your free taste</h3>
+    <p>Upgrade to NoCap Pro for unlimited roasts, idea ratings, and fight-my-corner letters.</p>
+    <div class="paywall-price">$9</div>
+    <div class="paywall-period">per month · cancel anytime</div>
+    <ul class="paywall-features">
+      <li>Unlimited uses of all 3 tools</li>
+      <li>Full detailed responses every time</li>
+      <li>All future tools included</li>
+      <li>Cancel anytime, no questions asked</li>
+    </ul>
+    <button class="paywall-cta" onclick="window.open('STRIPE_LINK_PLACEHOLDER','_blank')">Upgrade to Pro — $9/month</button>
+    <button class="paywall-skip" onclick="hidePaywall()">Maybe later</button>
+  </div>
+</div>
+
+<footer>NoCap AI © 2026 · Built for people who can handle the truth</footer>
+
+<script>
+  let activeTool = 'roast';
+  let resultText = '';
+
+  const config = {
+    roast: {
+      label: 'What are we roasting?',
+      placeholder: 'Paste your website URL, describe your business, or drop your startup pitch...',
+      emoji: '🔥', btnLabel: 'Roast it',
+      loading: 'Getting brutally honest about your business...',
+      badge: 'badge-roast', badgeText: '🔥 Roasted',
+      prompt: (input) => `You are a brutally honest, witty business critic. Your job is to help entrepreneurs by telling them the hard truth about their business. Roast this business or idea thoroughly. Point out every weakness — the copy, the positioning, the product, the pricing, the target market, the execution. Be specific, not vague. Use bold section headers to structure your response. End with a "Fix List" of exactly 5 things they should change immediately, ordered by importance.\n\nHere is the business/idea to roast:\n${input}`
+    },
+    rate: {
+      label: 'Describe your idea',
+      placeholder: 'Tell me your business idea. What is it, who is it for, and how does it make money?',
+      emoji: '⚡', btnLabel: 'Rate it',
+      loading: 'Running the numbers on your idea...',
+      badge: 'badge-rate', badgeText: '⚡ Verdict',
+      prompt: (input) => `You are a brutally honest startup evaluator who has assessed thousands of business ideas. Rate this idea with genuine analysis. Use bold headers for each section: Market Size (how big is the real addressable market?), Competition (who already does this, and how saturated is it?), Main Risks (the 3 most likely things that will kill this), Founder Advantage (why would THIS person specifically win?), and Viability Score (give a score out of 10 with one sharp sentence of reasoning). Be direct and specific. No fluff.\n\nIdea to rate:\n${input}`
+    },
+    fight: {
+      label: 'What happened?',
+      placeholder: 'Describe your situation. Who wronged you, what did they do, what outcome do you want?',
+      emoji: '⚖️', btnLabel: 'Write my letter',
+      loading: 'Building your case...',
+      badge: 'badge-fight', badgeText: '⚖️ Filed',
+      prompt: (input) => `You are an expert at writing assertive, professional letters that get results. Write a complete, ready-to-send letter for this situation. Structure it with: a clear subject line, professional opening, firm factual body paragraph(s) that reference relevant consumer rights or legal obligations where applicable, a specific clear demand with a reasonable deadline (e.g. 14 days), and a professional closing. Be assertive and firm without being rude. Make it feel like it was written by someone who knows their rights and means business.\n\nSituation:\n${input}`
+    }
+  };
+
+  function updateBadge() {
+    let left = 3;
+    ['roast','rate','fight'].forEach(t => {
+      if (localStorage.getItem('rt_' + t + '_used')) {
+        left--;
+        document.getElementById('ind-' + t).classList.add('show');
+      }
+    });
+    const el = document.getElementById('usesBadge');
+    el.textContent = left + ' free use' + (left !== 1 ? 's' : '') + ' left';
+  }
+
+  function selectTool(tool) {
+    activeTool = tool;
+    document.querySelectorAll('.tool-tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('tab-' + tool).classList.add('active');
+    const c = config[tool];
+    document.getElementById('inputLabel').textContent = c.label;
+    document.getElementById('mainInput').placeholder = c.placeholder;
+    document.getElementById('btnEmoji').textContent = c.emoji;
+    document.getElementById('btnLabel').textContent = c.btnLabel;
+    document.getElementById('resultCard').className = 'result-card';
+    document.getElementById('mainInput').value = '';
+    resultText = '';
+  }
+
+  async function generate() {
+    const input = document.getElementById('mainInput').value.trim();
+    if (!input) {
+      const ta = document.getElementById('mainInput');
+      ta.style.boxShadow = '0 0 0 2px var(--orange)';
+      ta.focus();
+      setTimeout(() => { ta.style.boxShadow = ''; }, 2000);
+      return;
+    }
+
+    if (localStorage.getItem('rt_' + activeTool + '_used')) {
+      showPaywall();
+      return;
+    }
+
+    const c = config[activeTool];
+    document.getElementById('generateBtn').disabled = true;
+    document.getElementById('loadingState').className = 'loading-state visible';
+    document.getElementById('loadingText').textContent = c.loading;
+    document.getElementById('resultCard').className = 'result-card';
+
+    try {
+      const response = await fetch('/api/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt: c.prompt(input) })
+      });
+
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || 'Something went wrong');
+
+      resultText = data.text;
+      localStorage.setItem('rt_' + activeTool + '_used', '1');
+      updateBadge();
+
+      const badge = document.getElementById('verdictBadge');
+      badge.className = 'verdict-badge ' + c.badge;
+      badge.textContent = c.badgeText;
+
+      document.getElementById('loadingState').className = 'loading-state';
+      document.getElementById('resultCard').className = 'result-card visible';
+
+      const body = document.getElementById('resultBody');
+      body.innerHTML = '';
+      let i = 0;
+      const speed = Math.max(6, Math.min(18, Math.floor(25000 / resultText.length)));
+      const cursor = document.createElement('span');
+      cursor.className = 'cursor-blink';
+      body.appendChild(cursor);
+
+      function typeNext() {
+        if (i < resultText.length) {
+          body.insertBefore(document.createTextNode(resultText[i]), cursor);
+          i++;
+          setTimeout(typeNext, speed);
+        } else {
+          cursor.remove();
+        }
+      }
+      typeNext();
+
+    } catch (err) {
+      document.getElementById('loadingState').className = 'loading-state';
+      document.getElementById('resultBody').textContent = 'Something went wrong — please try again.';
+      document.getElementById('resultCard').className = 'result-card visible';
+    }
+
+    document.getElementById('generateBtn').disabled = false;
+  }
+
+  function copyResult() {
+    if (!resultText) return;
+    navigator.clipboard.writeText(resultText).then(() => {
+      const btn = document.getElementById('copyBtn');
+      btn.textContent = 'Copied!';
+      setTimeout(() => { btn.textContent = 'Copy'; }, 2000);
+    });
+  }
+
+  function resetInput() {
+    document.getElementById('resultCard').className = 'result-card';
+    document.getElementById('mainInput').value = '';
+    resultText = '';
+  }
+
+  function showPaywall() {
+    document.getElementById('paywallOverlay').className = 'paywall-overlay visible';
+  }
+
+  function hidePaywall() {
+    document.getElementById('paywallOverlay').className = 'paywall-overlay';
+  }
+
+  updateBadge();
+</script>
+</body>
+</html>
