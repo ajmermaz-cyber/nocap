@@ -488,7 +488,122 @@
     margin-top: 2rem;
   }
 
-  /* RESPONSIVE */
+  /* AUTH SCREEN */
+  .auth-wrapper {
+    display: none;
+    max-width: 380px;
+    margin: 3rem auto 0;
+    padding: 0 1.5rem;
+  }
+
+  .auth-wrapper.visible { display: block; }
+
+  .tools-wrapper.hidden, .hero.hidden { display: none; }
+
+  .auth-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.75rem;
+  }
+
+  .auth-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 19px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin-bottom: 4px;
+    text-align: center;
+  }
+
+  .auth-sub {
+    font-size: 13px;
+    color: var(--text-muted);
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+
+  .auth-input {
+    width: 100%;
+    padding: 12px 14px;
+    background: var(--surface2);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-sm);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    outline: none;
+    margin-bottom: 10px;
+    transition: border-color 0.15s;
+  }
+
+  .auth-input:focus { border-color: rgba(255,95,31,0.4); }
+  .auth-input::placeholder { color: var(--text-faint); }
+
+  .auth-btn {
+    width: 100%;
+    padding: 13px;
+    background: var(--orange);
+    color: white;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-bottom: 12px;
+    transition: opacity 0.15s;
+  }
+
+  .auth-btn:hover { opacity: 0.9; }
+  .auth-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .auth-switch {
+    text-align: center;
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+
+  .auth-switch a {
+    color: var(--orange);
+    cursor: pointer;
+    text-decoration: none;
+  }
+
+  .auth-error {
+    background: rgba(255,80,80,0.1);
+    border: 1px solid rgba(255,80,80,0.25);
+    color: #FF7070;
+    font-size: 13px;
+    padding: 10px 12px;
+    border-radius: var(--radius-sm);
+    margin-bottom: 12px;
+    display: none;
+  }
+
+  .auth-error.visible { display: block; }
+
+  .user-pill {
+    font-size: 12px;
+    color: var(--text-muted);
+    background: var(--surface);
+    border: 1px solid var(--border-strong);
+    padding: 5px 12px;
+    border-radius: 20px;
+    cursor: pointer;
+    white-space: nowrap;
+    font-family: 'Inter', sans-serif;
+    display: none;
+  }
+
+  .checking-state {
+    text-align: center;
+    padding: 4rem 1rem;
+    color: var(--text-muted);
+    font-size: 14px;
+  }
+
+
   @media (max-width: 580px) {
     .hero { padding: 2.5rem 1.25rem 2rem; }
     .hero h1 { font-size: 30px; }
@@ -504,18 +619,33 @@
 <nav>
   <div class="logo">No<span>Cap</span> AI</div>
   <div class="nav-right">
-    <span class="uses-badge" id="usesBadge">3 free uses left</span>
-    <button class="upgrade-nav" onclick="showPaywall()">Upgrade — $7/mo</button>
+    <span class="user-pill" id="userPill" onclick="logout()">Log out</span>
+    <span class="uses-badge" id="usesBadge" style="display:none;">3 free uses left</span>
+    <button class="upgrade-nav" id="upgradeNavBtn" style="display:none;" onclick="showPaywall()">Upgrade — $7/mo</button>
   </div>
 </nav>
 
-<div class="hero">
+<div class="checking-state" id="checkingState">Checking your session...</div>
+
+<div class="auth-wrapper" id="authWrapper">
+  <div class="auth-card">
+    <div class="auth-title">Welcome to NoCap AI</div>
+    <div class="auth-sub" id="authSub">Sign in to get your free uses</div>
+    <div class="auth-error" id="authError"></div>
+    <input type="email" class="auth-input" id="authEmail" placeholder="Email address">
+    <input type="password" class="auth-input" id="authPassword" placeholder="Password">
+    <button class="auth-btn" id="authBtn" onclick="handleAuth()">Sign in</button>
+    <div class="auth-switch" id="authSwitch">Don't have an account? <a onclick="toggleAuthMode()">Sign up</a></div>
+  </div>
+</div>
+
+<div class="hero hidden" id="hero">
   <div class="hero-eyebrow">No filters. No sugarcoating.</div>
   <h1>The AI that tells you<br><em>the truth</em></h1>
   <p class="hero-sub">Roast your business, validate your idea, or fight your corner — with brutal honesty from an AI that doesn't care about your feelings.</p>
 </div>
 
-<div class="tools-wrapper">
+<div class="tools-wrapper hidden" id="toolsWrapper">
 
   <div class="tool-tabs">
     <div class="tool-tab active" id="tab-roast" onclick="selectTool('roast')">
@@ -590,9 +720,17 @@
 
 <footer>NoCap AI © 2026 · Built for people who can handle the truth</footer>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
+  const SUPABASE_URL = 'https://lvzuuiliejqbraysewex.supabase.co';
+  const SUPABASE_ANON_KEY = 'sb_publishable_6JtrMrey9s2tiYxuGBqPQg_kFv_To0h';
+  const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
   let activeTool = 'roast';
   let resultText = '';
+  let isSignUp = false;
+  let currentUser = null;
+  let profile = null;
 
   const config = {
     roast: {
@@ -601,6 +739,7 @@
       emoji: '🔥', btnLabel: 'Roast it',
       loading: 'Getting brutally honest about your business...',
       badge: 'badge-roast', badgeText: '🔥 Roasted',
+      usedField: 'roast_used',
       prompt: (input) => `You are a brutally honest, witty business critic. Your job is to help entrepreneurs by telling them the hard truth about their business. Roast this business or idea thoroughly. Point out every weakness — the copy, the positioning, the product, the pricing, the target market, the execution. Be specific, not vague. Use bold section headers to structure your response. End with a "Fix List" of exactly 5 things they should change immediately, ordered by importance.\n\nHere is the business/idea to roast:\n${input}`
     },
     rate: {
@@ -609,6 +748,7 @@
       emoji: '⚡', btnLabel: 'Rate it',
       loading: 'Running the numbers on your idea...',
       badge: 'badge-rate', badgeText: '⚡ Verdict',
+      usedField: 'rate_used',
       prompt: (input) => `You are a brutally honest startup evaluator who has assessed thousands of business ideas. Rate this idea with genuine analysis. Use bold headers for each section: Market Size (how big is the real addressable market?), Competition (who already does this, and how saturated is it?), Main Risks (the 3 most likely things that will kill this), Founder Advantage (why would THIS person specifically win?), and Viability Score (give a score out of 10 with one sharp sentence of reasoning). Be direct and specific. No fluff.\n\nIdea to rate:\n${input}`
     },
     fight: {
@@ -617,21 +757,156 @@
       emoji: '⚖️', btnLabel: 'Write my letter',
       loading: 'Building your case...',
       badge: 'badge-fight', badgeText: '⚖️ Filed',
+      usedField: 'fight_used',
       prompt: (input) => `You are an expert at writing assertive, professional letters that get results. Write a complete, ready-to-send letter for this situation. Structure it with: a clear subject line, professional opening, firm factual body paragraph(s) that reference relevant consumer rights or legal obligations where applicable, a specific clear demand with a reasonable deadline (e.g. 14 days), and a professional closing. Be assertive and firm without being rude. Make it feel like it was written by someone who knows their rights and means business.\n\nSituation:\n${input}`
     }
   };
 
+  // ---------- AUTH ----------
+
+  function toggleAuthMode() {
+    isSignUp = !isSignUp;
+    document.getElementById('authBtn').textContent = isSignUp ? 'Sign up' : 'Sign in';
+    document.getElementById('authSub').textContent = isSignUp ? 'Create an account to get your free uses' : 'Sign in to get your free uses';
+    document.getElementById('authSwitch').innerHTML = isSignUp
+      ? 'Already have an account? <a onclick="toggleAuthMode()">Sign in</a>'
+      : "Don't have an account? <a onclick=\"toggleAuthMode()\">Sign up</a>";
+    hideAuthError();
+  }
+
+  function showAuthError(msg) {
+    const el = document.getElementById('authError');
+    el.textContent = msg;
+    el.className = 'auth-error visible';
+  }
+
+  function hideAuthError() {
+    document.getElementById('authError').className = 'auth-error';
+  }
+
+  async function handleAuth() {
+    const email = document.getElementById('authEmail').value.trim();
+    const password = document.getElementById('authPassword').value;
+    if (!email || !password) {
+      showAuthError('Please enter both email and password.');
+      return;
+    }
+    if (password.length < 6) {
+      showAuthError('Password must be at least 6 characters.');
+      return;
+    }
+
+    hideAuthError();
+    document.getElementById('authBtn').disabled = true;
+    document.getElementById('authBtn').textContent = isSignUp ? 'Signing up...' : 'Signing in...';
+
+    try {
+      let result;
+      if (isSignUp) {
+        result = await sb.auth.signUp({ email, password });
+      } else {
+        result = await sb.auth.signInWithPassword({ email, password });
+      }
+
+      if (result.error) throw result.error;
+
+      if (isSignUp && result.data.user && !result.data.session) {
+        showAuthError('Account created! Check your email to confirm, then sign in.');
+        document.getElementById('authBtn').disabled = false;
+        document.getElementById('authBtn').textContent = 'Sign up';
+        return;
+      }
+
+      await onLoggedIn(result.data.user);
+
+    } catch (err) {
+      showAuthError(err.message || 'Something went wrong.');
+      document.getElementById('authBtn').disabled = false;
+      document.getElementById('authBtn').textContent = isSignUp ? 'Sign up' : 'Sign in';
+    }
+  }
+
+  async function logout() {
+    await sb.auth.signOut();
+    currentUser = null;
+    profile = null;
+    showAuthScreen();
+  }
+
+  function showAuthScreen() {
+    document.getElementById('checkingState').style.display = 'none';
+    document.getElementById('authWrapper').className = 'auth-wrapper visible';
+    document.getElementById('hero').className = 'hero hidden';
+    document.getElementById('toolsWrapper').className = 'tools-wrapper hidden';
+    document.getElementById('userPill').style.display = 'none';
+    document.getElementById('usesBadge').style.display = 'none';
+    document.getElementById('upgradeNavBtn').style.display = 'none';
+    document.getElementById('authBtn').disabled = false;
+    document.getElementById('authBtn').textContent = isSignUp ? 'Sign up' : 'Sign in';
+  }
+
+  async function onLoggedIn(user) {
+    currentUser = user;
+
+    let { data, error } = await sb.from('nocap_users').select('*').eq('id', user.id).single();
+
+    if (error || !data) {
+      const { data: inserted, error: insertErr } = await sb
+        .from('nocap_users')
+        .insert({ id: user.id, email: user.email })
+        .select()
+        .single();
+      data = inserted;
+    }
+
+    profile = data;
+
+    document.getElementById('checkingState').style.display = 'none';
+    document.getElementById('authWrapper').className = 'auth-wrapper';
+    document.getElementById('hero').className = 'hero';
+    document.getElementById('toolsWrapper').className = 'tools-wrapper';
+    document.getElementById('userPill').style.display = 'inline-block';
+    document.getElementById('userPill').textContent = user.email + ' · Log out';
+    document.getElementById('usesBadge').style.display = 'inline-block';
+    document.getElementById('upgradeNavBtn').style.display = 'inline-block';
+
+    updateBadge();
+    selectTool('roast');
+  }
+
+  async function checkSession() {
+    const { data } = await sb.auth.getSession();
+    if (data.session && data.session.user) {
+      await onLoggedIn(data.session.user);
+    } else {
+      showAuthScreen();
+    }
+  }
+
+  // ---------- USAGE / BADGE ----------
+
   function updateBadge() {
-    let left = 3;
+    if (!profile) return;
+    if (profile.is_pro) {
+      document.getElementById('usesBadge').textContent = 'Pro — unlimited';
+      document.getElementById('upgradeNavBtn').style.display = 'none';
+      ['roast','rate','fight'].forEach(t => document.getElementById('ind-' + t).classList.remove('show'));
+      return;
+    }
+    let left = 0;
     ['roast','rate','fight'].forEach(t => {
-      if (localStorage.getItem('rt_' + t + '_used')) {
-        left--;
+      const used = profile[config[t].usedField];
+      if (used) {
         document.getElementById('ind-' + t).classList.add('show');
+      } else {
+        left++;
+        document.getElementById('ind-' + t).classList.remove('show');
       }
     });
-    const el = document.getElementById('usesBadge');
-    el.textContent = left + ' free use' + (left !== 1 ? 's' : '') + ' left';
+    document.getElementById('usesBadge').textContent = left + ' free use' + (left !== 1 ? 's' : '') + ' left';
   }
+
+  // ---------- TOOLS ----------
 
   function selectTool(tool) {
     activeTool = tool;
@@ -657,12 +932,13 @@
       return;
     }
 
-    if (localStorage.getItem('rt_' + activeTool + '_used')) {
+    const c = config[activeTool];
+
+    if (!profile.is_pro && profile[c.usedField]) {
       showPaywall();
       return;
     }
 
-    const c = config[activeTool];
     document.getElementById('generateBtn').disabled = true;
     document.getElementById('loadingState').className = 'loading-state visible';
     document.getElementById('loadingText').textContent = c.loading;
@@ -679,7 +955,19 @@
       if (!response.ok) throw new Error(data.error || 'Something went wrong');
 
       resultText = data.text;
-      localStorage.setItem('rt_' + activeTool + '_used', '1');
+
+      if (!profile.is_pro) {
+        const update = {};
+        update[c.usedField] = true;
+        const { data: updated } = await sb
+          .from('nocap_users')
+          .update(update)
+          .eq('id', currentUser.id)
+          .select()
+          .single();
+        if (updated) profile = updated;
+      }
+
       updateBadge();
 
       const badge = document.getElementById('verdictBadge');
@@ -740,7 +1028,8 @@
     document.getElementById('paywallOverlay').className = 'paywall-overlay';
   }
 
-  updateBadge();
+  checkSession();
 </script>
+
 </body>
 </html>
