@@ -628,7 +628,8 @@
 <div class="checking-state" id="checkingState">Checking your session...</div>
 
 <div class="auth-wrapper" id="authWrapper">
-  <div class="auth-card">
+  <!-- NORMAL LOGIN -->
+  <div class="auth-card" id="loginCard">
     <div class="auth-title">Welcome to NoCap AI</div>
     <div class="auth-sub" id="authSub">Sign in to get your free uses</div>
     <div class="auth-error" id="authError"></div>
@@ -644,6 +645,16 @@
       <span style="font-size:11px; color:var(--text-faint);"> · </span>
       <a href="/legal.html" style="font-size:11px; color:var(--text-faint);">Privacy Policy</a>
     </div>
+  </div>
+
+  <!-- SET NEW PASSWORD (shown after clicking reset link) -->
+  <div class="auth-card" id="resetCard" style="display:none;">
+    <div class="auth-title">Set new password</div>
+    <div class="auth-sub">Choose a new password for your account</div>
+    <div class="auth-error" id="resetError"></div>
+    <input type="password" class="auth-input" id="newPassword" placeholder="New password (min 6 characters)">
+    <input type="password" class="auth-input" id="confirmPassword" placeholder="Confirm new password">
+    <button class="auth-btn" id="resetBtn" onclick="updatePassword()">Set new password</button>
   </div>
 </div>
 
@@ -898,11 +909,62 @@
   }
 
   async function checkSession() {
+    // Check if this is a password reset redirect
+    const hash = window.location.hash;
+    if (hash.includes('type=recovery') || hash.includes('type=email_change') || hash.includes('recovery')) {
+      // Show the set new password form
+      const { data } = await sb.auth.getSession();
+      if (data.session) {
+        document.getElementById('checkingState').style.display = 'none';
+        document.getElementById('authWrapper').className = 'auth-wrapper visible';
+        document.getElementById('loginCard').style.display = 'none';
+        document.getElementById('resetCard').style.display = 'block';
+        return;
+      }
+    }
+
     const { data } = await sb.auth.getSession();
     if (data.session && data.session.user) {
       await onLoggedIn(data.session.user);
     } else {
       showAuthScreen();
+    }
+  }
+
+  async function updatePassword() {
+    const newPass = document.getElementById('newPassword').value;
+    const confirmPass = document.getElementById('confirmPassword').value;
+    const errorEl = document.getElementById('resetError');
+
+    if (!newPass || newPass.length < 6) {
+      errorEl.textContent = 'Password must be at least 6 characters.';
+      errorEl.className = 'auth-error visible';
+      return;
+    }
+    if (newPass !== confirmPass) {
+      errorEl.textContent = 'Passwords do not match.';
+      errorEl.className = 'auth-error visible';
+      return;
+    }
+
+    errorEl.className = 'auth-error';
+    document.getElementById('resetBtn').disabled = true;
+    document.getElementById('resetBtn').textContent = 'Updating...';
+
+    const { error } = await sb.auth.updateUser({ password: newPass });
+
+    if (error) {
+      errorEl.textContent = error.message;
+      errorEl.className = 'auth-error visible';
+      document.getElementById('resetBtn').disabled = false;
+      document.getElementById('resetBtn').textContent = 'Set new password';
+    } else {
+      // Password updated — log them in
+      const { data } = await sb.auth.getSession();
+      if (data.session) {
+        window.location.hash = '';
+        await onLoggedIn(data.session.user);
+      }
     }
   }
 
@@ -1068,7 +1130,7 @@
     document.getElementById('forgotError').className = 'auth-error';
 
     const { error } = await sb.auth.resetPasswordForEmail(email, {
-      redirectTo: 'https://nocap-dun.vercel.app'
+      redirectTo: 'https://nocap-dun.vercel.app/#recovery'
     });
 
     if (error) {
