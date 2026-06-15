@@ -948,7 +948,7 @@
       const response = await fetch('/api/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prompt: c.prompt(input) })
+        body: JSON.stringify({ prompt: c.prompt(input), tool: activeTool, input: input })
       });
 
       const data = await response.json();
