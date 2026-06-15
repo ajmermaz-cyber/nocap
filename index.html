@@ -635,7 +635,15 @@
     <input type="email" class="auth-input" id="authEmail" placeholder="Email address">
     <input type="password" class="auth-input" id="authPassword" placeholder="Password">
     <button class="auth-btn" id="authBtn" onclick="handleAuth()">Sign in</button>
+    <div style="text-align:center; margin-bottom: 10px;">
+      <a onclick="showForgotPassword()" style="font-size:13px; color:var(--text-muted); cursor:pointer;">Forgot password?</a>
+    </div>
     <div class="auth-switch" id="authSwitch">Don't have an account? <a onclick="toggleAuthMode()">Sign up</a></div>
+    <div style="text-align:center; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border);">
+      <a href="/legal.html" style="font-size:11px; color:var(--text-faint);">Terms of Service</a>
+      <span style="font-size:11px; color:var(--text-faint);"> · </span>
+      <a href="/legal.html" style="font-size:11px; color:var(--text-faint);">Privacy Policy</a>
+    </div>
   </div>
 </div>
 
@@ -700,7 +708,22 @@
 
 </div>
 
-<div class="paywall-overlay" id="paywallOverlay">
+<div class="paywall-overlay" id="forgotOverlay">
+  <div class="paywall-modal">
+    <span class="paywall-emoji">🔑</span>
+    <h3>Reset your password</h3>
+    <p>Enter your email and we'll send you a link to reset your password.</p>
+    <div class="auth-error" id="forgotError"></div>
+    <div id="forgotSuccess" style="display:none; background:rgba(74,222,128,0.1); border:1px solid rgba(74,222,128,0.25); color:#4ADE80; font-size:13px; padding:10px 12px; border-radius:var(--radius-sm); margin-bottom:12px;">
+      Check your email for a reset link!
+    </div>
+    <input type="email" class="auth-input" id="forgotEmail" placeholder="Your email address" style="margin-bottom:12px;">
+    <button class="paywall-cta" id="forgotBtn" onclick="sendResetEmail()">Send reset link</button>
+    <button class="paywall-skip" onclick="hideForgotPassword()">Cancel</button>
+  </div>
+</div>
+
+
   <div class="paywall-modal">
     <span class="paywall-emoji">🔓</span>
     <h3>You've had your free taste</h3>
@@ -1018,6 +1041,46 @@
     document.getElementById('resultCard').className = 'result-card';
     document.getElementById('mainInput').value = '';
     resultText = '';
+  }
+
+  function showForgotPassword() {
+    document.getElementById('forgotOverlay').className = 'paywall-overlay visible';
+    document.getElementById('forgotError').className = 'auth-error';
+    document.getElementById('forgotSuccess').style.display = 'none';
+    document.getElementById('forgotEmail').value = '';
+  }
+
+  function hideForgotPassword() {
+    document.getElementById('forgotOverlay').className = 'paywall-overlay';
+  }
+
+  async function sendResetEmail() {
+    const email = document.getElementById('forgotEmail').value.trim();
+    if (!email) {
+      const el = document.getElementById('forgotError');
+      el.textContent = 'Please enter your email address.';
+      el.className = 'auth-error visible';
+      return;
+    }
+
+    document.getElementById('forgotBtn').disabled = true;
+    document.getElementById('forgotBtn').textContent = 'Sending...';
+    document.getElementById('forgotError').className = 'auth-error';
+
+    const { error } = await sb.auth.resetPasswordForEmail(email, {
+      redirectTo: 'https://nocap-dun.vercel.app'
+    });
+
+    if (error) {
+      const el = document.getElementById('forgotError');
+      el.textContent = error.message;
+      el.className = 'auth-error visible';
+    } else {
+      document.getElementById('forgotSuccess').style.display = 'block';
+    }
+
+    document.getElementById('forgotBtn').disabled = false;
+    document.getElementById('forgotBtn').textContent = 'Send reset link';
   }
 
   function showPaywall() {
