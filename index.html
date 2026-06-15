@@ -395,6 +395,17 @@
   }
 
   async function checkSession() {
+    // First check URL hash immediately on page load
+    const hash = window.location.hash;
+    if (hash.includes('type=recovery')) {
+      recoveryMode = true;
+      showResetScreen();
+      // Let Supabase process the tokens from the URL
+      await sb.auth.getSession();
+      return;
+    }
+
+    // Listen for auth state changes
     sb.auth.onAuthStateChange(async (event, session) => {
       if (event === 'PASSWORD_RECOVERY') {
         recoveryMode = true;
