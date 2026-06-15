@@ -7,603 +7,106 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
   :root {
-    --bg: #0C1116;
-    --surface: #141B22;
-    --surface2: #1C2530;
-    --border: rgba(255,255,255,0.07);
-    --border-strong: rgba(255,255,255,0.13);
-    --orange: #FF5F1F;
-    --orange-dim: rgba(255,95,31,0.1);
-    --text: #F0F0F0;
-    --text-muted: #8B9099;
-    --text-faint: #3E4750;
-    --radius: 14px;
-    --radius-sm: 9px;
+    --bg: #0C1116; --surface: #141B22; --surface2: #1C2530;
+    --border: rgba(255,255,255,0.07); --border-strong: rgba(255,255,255,0.13);
+    --orange: #FF5F1F; --orange-dim: rgba(255,95,31,0.1);
+    --text: #F0F0F0; --text-muted: #8B9099; --text-faint: #3E4750;
+    --radius: 14px; --radius-sm: 9px;
   }
-
-  body {
-    font-family: 'Inter', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-    -webkit-font-smoothing: antialiased;
-    padding-bottom: 4rem;
-  }
-
-  /* NAV */
-  nav {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 1.25rem 2rem;
-    border-bottom: 1px solid var(--border);
-    position: sticky;
-    top: 0;
-    background: rgba(12,17,22,0.94);
-    backdrop-filter: blur(16px);
-    z-index: 100;
-  }
-
-  .logo {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 19px;
-    font-weight: 800;
-    letter-spacing: -0.03em;
-    color: var(--text);
-  }
-
+  body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; -webkit-font-smoothing: antialiased; padding-bottom: 4rem; }
+  nav { display: flex; align-items: center; justify-content: space-between; padding: 1.25rem 2rem; border-bottom: 1px solid var(--border); position: sticky; top: 0; background: rgba(12,17,22,0.94); backdrop-filter: blur(16px); z-index: 100; }
+  .logo { font-family: 'Space Grotesk', sans-serif; font-size: 19px; font-weight: 800; letter-spacing: -0.03em; color: var(--text); }
   .logo span { color: var(--orange); }
-
   .nav-right { display: flex; align-items: center; gap: 10px; }
-
-  .uses-badge {
-    font-size: 12px;
-    color: var(--text-muted);
-    background: var(--surface);
-    border: 1px solid var(--border-strong);
-    padding: 5px 12px;
-    border-radius: 20px;
-    white-space: nowrap;
-  }
-
-  .upgrade-nav {
-    font-size: 13px;
-    font-weight: 700;
-    font-family: 'Space Grotesk', sans-serif;
-    background: var(--orange);
-    color: white;
-    padding: 6px 16px;
-    border-radius: var(--radius-sm);
-    border: none;
-    cursor: pointer;
-    transition: opacity 0.15s;
-    white-space: nowrap;
-  }
-
+  .uses-badge { font-size: 12px; color: var(--text-muted); background: var(--surface); border: 1px solid var(--border-strong); padding: 5px 12px; border-radius: 20px; white-space: nowrap; }
+  .upgrade-nav { font-size: 13px; font-weight: 700; font-family: 'Space Grotesk', sans-serif; background: var(--orange); color: white; padding: 6px 16px; border-radius: var(--radius-sm); border: none; cursor: pointer; transition: opacity 0.15s; white-space: nowrap; }
   .upgrade-nav:hover { opacity: 0.88; }
-
-  /* HERO */
-  .hero {
-    text-align: center;
-    padding: 4rem 2rem 3rem;
-    max-width: 680px;
-    margin: 0 auto;
-  }
-
-  .hero-eyebrow {
-    font-size: 11px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    color: var(--orange);
-    margin-bottom: 1.25rem;
-  }
-
-  .hero h1 {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: clamp(34px, 6vw, 58px);
-    font-weight: 800;
-    letter-spacing: -0.04em;
-    line-height: 1.06;
-    margin-bottom: 1.1rem;
-  }
-
-  .hero h1 em {
-    font-style: normal;
-    color: var(--orange);
-  }
-
-  .hero-sub {
-    font-size: 16px;
-    color: var(--text-muted);
-    line-height: 1.75;
-    max-width: 460px;
-    margin: 0 auto;
-  }
-
-  /* TOOLS */
-  .tools-wrapper {
-    max-width: 780px;
-    margin: 0 auto;
-    padding: 0 1.5rem 2rem;
-  }
-
-  .tool-tabs {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-    margin-bottom: 1.25rem;
-  }
-
-  .tool-tab {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 1.25rem 1rem 1rem;
-    cursor: pointer;
-    transition: border-color 0.2s, background 0.2s;
-    text-align: left;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .tool-tab::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: var(--orange);
-    transform: scaleX(0);
-    transition: transform 0.2s;
-    transform-origin: left;
-  }
-
+  .hero { text-align: center; padding: 4rem 2rem 3rem; max-width: 680px; margin: 0 auto; }
+  .hero-eyebrow { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: var(--orange); margin-bottom: 1.25rem; }
+  .hero h1 { font-family: 'Space Grotesk', sans-serif; font-size: clamp(34px, 6vw, 58px); font-weight: 800; letter-spacing: -0.04em; line-height: 1.06; margin-bottom: 1.1rem; }
+  .hero h1 em { font-style: normal; color: var(--orange); }
+  .hero-sub { font-size: 16px; color: var(--text-muted); line-height: 1.75; max-width: 460px; margin: 0 auto; }
+  .tools-wrapper { max-width: 780px; margin: 0 auto; padding: 0 1.5rem 2rem; }
+  .tool-tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 1.25rem; }
+  .tool-tab { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem 1rem 1rem; cursor: pointer; transition: border-color 0.2s, background 0.2s; text-align: left; position: relative; overflow: hidden; }
+  .tool-tab::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px; background: var(--orange); transform: scaleX(0); transition: transform 0.2s; transform-origin: left; }
   .tool-tab.active { border-color: rgba(255,95,31,0.3); background: var(--surface2); }
   .tool-tab.active::after { transform: scaleX(1); }
   .tool-tab:hover:not(.active) { border-color: var(--border-strong); }
-
-  .tool-used-indicator {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: var(--orange);
-    opacity: 0;
-    transition: opacity 0.2s;
-  }
-
+  .tool-used-indicator { position: absolute; top: 10px; right: 10px; width: 7px; height: 7px; border-radius: 50%; background: var(--orange); opacity: 0; transition: opacity 0.2s; }
   .tool-used-indicator.show { opacity: 1; }
-
   .tool-emoji { font-size: 22px; display: block; margin-bottom: 8px; }
-
-  .tool-name {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 14px;
-    font-weight: 700;
-    color: var(--text);
-    margin-bottom: 4px;
-    letter-spacing: -0.01em;
-  }
-
+  .tool-name { font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 4px; letter-spacing: -0.01em; }
   .tool-desc { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
-
-  /* INPUT */
-  .input-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    overflow: hidden;
-    margin-bottom: 10px;
-    transition: border-color 0.2s;
-  }
-
+  .input-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin-bottom: 10px; transition: border-color 0.2s; }
   .input-card:focus-within { border-color: rgba(255,95,31,0.3); }
-
-  .input-label {
-    padding: 14px 16px 0;
-    font-size: 11px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--text-muted);
-  }
-
-  .main-textarea {
-    width: 100%;
-    min-height: 130px;
-    padding: 10px 16px 16px;
-    background: transparent;
-    border: none;
-    outline: none;
-    font-family: 'Inter', sans-serif;
-    font-size: 15px;
-    color: var(--text);
-    resize: vertical;
-    line-height: 1.7;
-  }
-
+  .input-label { padding: 14px 16px 0; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); }
+  .main-textarea { width: 100%; min-height: 130px; padding: 10px 16px 16px; background: transparent; border: none; outline: none; font-family: 'Inter', sans-serif; font-size: 15px; color: var(--text); resize: vertical; line-height: 1.7; }
   .main-textarea::placeholder { color: var(--text-faint); }
-
-  /* GENERATE */
-  .generate-btn {
-    width: 100%;
-    padding: 15px;
-    background: var(--orange);
-    color: white;
-    border: none;
-    border-radius: var(--radius-sm);
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 16px;
-    font-weight: 700;
-    letter-spacing: -0.01em;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    transition: opacity 0.15s, transform 0.1s;
-    margin-bottom: 1.25rem;
-  }
-
+  .generate-btn { width: 100%; padding: 15px; background: var(--orange); color: white; border: none; border-radius: var(--radius-sm); font-family: 'Space Grotesk', sans-serif; font-size: 16px; font-weight: 700; letter-spacing: -0.01em; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: opacity 0.15s, transform 0.1s; margin-bottom: 1.25rem; }
   .generate-btn:hover { opacity: 0.9; }
   .generate-btn:active { transform: scale(0.99); }
   .generate-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
-
-  /* LOADING */
   .loading-state { display: none; text-align: center; padding: 2.5rem 1rem; }
   .loading-state.visible { display: block; }
-
   .loading-dots { display: flex; gap: 7px; justify-content: center; margin-bottom: 14px; }
-
-  .loading-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--orange);
-    animation: ldot 1.4s infinite;
-  }
-
+  .loading-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--orange); animation: ldot 1.4s infinite; }
   .loading-dot:nth-child(2) { animation-delay: 0.2s; }
   .loading-dot:nth-child(3) { animation-delay: 0.4s; }
-
-  @keyframes ldot {
-    0%, 80%, 100% { transform: scale(0.55); opacity: 0.35; }
-    40% { transform: scale(1); opacity: 1; }
-  }
-
+  @keyframes ldot { 0%,80%,100%{transform:scale(0.55);opacity:0.35} 40%{transform:scale(1);opacity:1} }
   .loading-text { font-size: 14px; color: var(--text-muted); font-style: italic; }
-
-  /* RESULT */
   .result-card { display: none; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin-bottom: 1.5rem; }
   .result-card.visible { display: block; animation: fadeUp 0.3s ease; }
-
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(8px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  .result-header {
-    padding: 12px 16px;
-    background: var(--surface2);
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .verdict-badge {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 11px;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    padding: 4px 12px;
-    border-radius: 5px;
-  }
-
+  @keyframes fadeUp { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+  .result-header { padding: 12px 16px; background: var(--surface2); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+  .verdict-badge { font-family: 'Space Grotesk', sans-serif; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; padding: 4px 12px; border-radius: 5px; }
   .badge-roast { background: rgba(255,80,80,0.15); color: #FF7070; }
   .badge-rate { background: rgba(255,200,0,0.13); color: #FFD000; }
   .badge-fight { background: rgba(74,222,128,0.12); color: #4ADE80; }
-
-  .copy-btn {
-    font-size: 12px;
-    color: var(--text-muted);
-    background: none;
-    border: 1px solid var(--border-strong);
-    border-radius: 6px;
-    padding: 4px 12px;
-    cursor: pointer;
-    font-family: 'Inter', sans-serif;
-    transition: color 0.15s, border-color 0.15s;
-  }
-
-  .copy-btn:hover { color: var(--text); border-color: var(--text-muted); }
-
-  .result-body {
-    padding: 1.5rem;
-    font-size: 14px;
-    color: var(--text);
-    line-height: 1.9;
-    white-space: pre-wrap;
-    min-height: 60px;
-  }
-
-  .cursor-blink {
-    display: inline-block;
-    width: 2px;
-    height: 15px;
-    background: var(--orange);
-    margin-left: 2px;
-    vertical-align: middle;
-    animation: blink 0.7s infinite;
-  }
-
-  @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
-
-  .result-footer {
-    padding: 12px 16px;
-    border-top: 1px solid var(--border);
-    display: flex;
-    gap: 8px;
-  }
-
-  .try-again-btn {
-    font-size: 13px;
-    color: var(--orange);
-    background: none;
-    border: 1px solid rgba(255,95,31,0.25);
-    border-radius: var(--radius-sm);
-    padding: 6px 14px;
-    cursor: pointer;
-    font-family: 'Inter', sans-serif;
-    font-weight: 500;
-    transition: background 0.15s;
-  }
-
+  .copy-btn { font-size: 12px; color: var(--text-muted); background: none; border: 1px solid var(--border-strong); border-radius: 6px; padding: 4px 12px; cursor: pointer; font-family: 'Inter', sans-serif; transition: color 0.15s; }
+  .copy-btn:hover { color: var(--text); }
+  .result-body { padding: 1.5rem; font-size: 14px; color: var(--text); line-height: 1.9; white-space: pre-wrap; min-height: 60px; }
+  .cursor-blink { display: inline-block; width: 2px; height: 15px; background: var(--orange); margin-left: 2px; vertical-align: middle; animation: blink 0.7s infinite; }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+  .result-footer { padding: 12px 16px; border-top: 1px solid var(--border); display: flex; gap: 8px; }
+  .try-again-btn { font-size: 13px; color: var(--orange); background: none; border: 1px solid rgba(255,95,31,0.25); border-radius: var(--radius-sm); padding: 6px 14px; cursor: pointer; font-family: 'Inter', sans-serif; font-weight: 500; transition: background 0.15s; }
   .try-again-btn:hover { background: var(--orange-dim); }
-
-  /* PAYWALL */
-  .paywall-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.88);
-    z-index: 200;
-    align-items: center;
-    justify-content: center;
-    padding: 1.5rem;
-    backdrop-filter: blur(6px);
-  }
-
-  .paywall-overlay.visible { display: flex; }
-
-  .paywall-modal {
-    background: var(--surface);
-    border: 1px solid var(--border-strong);
-    border-radius: var(--radius);
-    padding: 2.5rem 2rem;
-    max-width: 400px;
-    width: 100%;
-    text-align: center;
-    animation: fadeUp 0.25s ease;
-  }
-
-  .paywall-emoji { font-size: 38px; display: block; margin-bottom: 1rem; }
-
-  .paywall-modal h3 {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 22px;
-    font-weight: 800;
-    letter-spacing: -0.03em;
-    margin-bottom: 8px;
-  }
-
-  .paywall-modal p {
-    font-size: 14px;
-    color: var(--text-muted);
-    line-height: 1.7;
-    margin-bottom: 1.5rem;
-  }
-
-  .paywall-price {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 42px;
-    font-weight: 800;
-    color: var(--orange);
-    letter-spacing: -0.05em;
-    line-height: 1;
-    margin-bottom: 4px;
-  }
-
-  .paywall-period {
-    font-size: 13px;
-    color: var(--text-muted);
-    margin-bottom: 1.5rem;
-  }
-
-  .paywall-features {
-    list-style: none;
-    margin-bottom: 1.75rem;
-    text-align: left;
-    background: var(--surface2);
-    border-radius: var(--radius-sm);
-    padding: 1rem 1.25rem;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .paywall-features li {
-    font-size: 13px;
-    color: var(--text-muted);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .paywall-features li::before { content: '✓'; color: var(--orange); font-weight: 700; flex-shrink: 0; }
-
-  .paywall-cta {
-    width: 100%;
-    padding: 14px;
-    background: var(--orange);
-    color: white;
-    border: none;
-    border-radius: var(--radius-sm);
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 15px;
-    font-weight: 700;
-    cursor: pointer;
-    margin-bottom: 10px;
-    transition: opacity 0.15s;
-  }
-
-  .paywall-cta:hover { opacity: 0.9; }
-
-  .paywall-skip {
-    font-size: 13px;
-    color: var(--text-faint);
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-family: 'Inter', sans-serif;
-    transition: color 0.15s;
-  }
-
-  .paywall-skip:hover { color: var(--text-muted); }
-
-  /* FOOTER */
-  footer {
-    text-align: center;
-    padding: 2rem;
-    font-size: 12px;
-    color: var(--text-faint);
-    border-top: 1px solid var(--border);
-    margin-top: 2rem;
-  }
-
-  /* AUTH SCREEN */
-  .auth-wrapper {
-    display: none;
-    max-width: 380px;
-    margin: 3rem auto 0;
-    padding: 0 1.5rem;
-  }
-
+  .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.88); z-index: 200; align-items: center; justify-content: center; padding: 1.5rem; backdrop-filter: blur(6px); }
+  .overlay.visible { display: flex; }
+  .modal { background: var(--surface); border: 1px solid var(--border-strong); border-radius: var(--radius); padding: 2.5rem 2rem; max-width: 400px; width: 100%; text-align: center; animation: fadeUp 0.25s ease; }
+  .modal-emoji { font-size: 38px; display: block; margin-bottom: 1rem; }
+  .modal h3 { font-family: 'Space Grotesk', sans-serif; font-size: 22px; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 8px; }
+  .modal p { font-size: 14px; color: var(--text-muted); line-height: 1.7; margin-bottom: 1.5rem; }
+  .modal-price { font-family: 'Space Grotesk', sans-serif; font-size: 42px; font-weight: 800; color: var(--orange); letter-spacing: -0.05em; line-height: 1; margin-bottom: 4px; }
+  .modal-period { font-size: 13px; color: var(--text-muted); margin-bottom: 1.5rem; }
+  .modal-features { list-style: none; margin-bottom: 1.75rem; text-align: left; background: var(--surface2); border-radius: var(--radius-sm); padding: 1rem 1.25rem; display: flex; flex-direction: column; gap: 8px; }
+  .modal-features li { font-size: 13px; color: var(--text-muted); display: flex; align-items: center; gap: 8px; }
+  .modal-features li::before { content: '✓'; color: var(--orange); font-weight: 700; flex-shrink: 0; }
+  .modal-cta { width: 100%; padding: 14px; background: var(--orange); color: white; border: none; border-radius: var(--radius-sm); font-family: 'Space Grotesk', sans-serif; font-size: 15px; font-weight: 700; cursor: pointer; margin-bottom: 10px; transition: opacity 0.15s; }
+  .modal-cta:hover { opacity: 0.9; }
+  .modal-skip { font-size: 13px; color: var(--text-faint); background: none; border: none; cursor: pointer; font-family: 'Inter', sans-serif; transition: color 0.15s; }
+  .modal-skip:hover { color: var(--text-muted); }
+  .modal-success { display: none; background: rgba(74,222,128,0.1); border: 1px solid rgba(74,222,128,0.25); color: #4ADE80; font-size: 13px; padding: 10px 12px; border-radius: var(--radius-sm); margin-bottom: 12px; }
+  footer { text-align: center; padding: 2rem; font-size: 12px; color: var(--text-faint); border-top: 1px solid var(--border); margin-top: 2rem; }
+  .auth-wrapper { display: none; max-width: 380px; margin: 3rem auto 0; padding: 0 1.5rem; }
   .auth-wrapper.visible { display: block; }
-
   .tools-wrapper.hidden, .hero.hidden { display: none; }
-
-  .auth-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 1.75rem;
-  }
-
-  .auth-title {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 19px;
-    font-weight: 800;
-    letter-spacing: -0.02em;
-    margin-bottom: 4px;
-    text-align: center;
-  }
-
-  .auth-sub {
-    font-size: 13px;
-    color: var(--text-muted);
-    text-align: center;
-    margin-bottom: 1.5rem;
-  }
-
-  .auth-input {
-    width: 100%;
-    padding: 12px 14px;
-    background: var(--surface2);
-    border: 1px solid var(--border-strong);
-    border-radius: var(--radius-sm);
-    color: var(--text);
-    font-family: 'Inter', sans-serif;
-    font-size: 14px;
-    outline: none;
-    margin-bottom: 10px;
-    transition: border-color 0.15s;
-  }
-
+  .auth-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.75rem; }
+  .auth-title { font-family: 'Space Grotesk', sans-serif; font-size: 19px; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 4px; text-align: center; }
+  .auth-sub { font-size: 13px; color: var(--text-muted); text-align: center; margin-bottom: 1.5rem; }
+  .auth-input { width: 100%; padding: 12px 14px; background: var(--surface2); border: 1px solid var(--border-strong); border-radius: var(--radius-sm); color: var(--text); font-family: 'Inter', sans-serif; font-size: 14px; outline: none; margin-bottom: 10px; transition: border-color 0.15s; }
   .auth-input:focus { border-color: rgba(255,95,31,0.4); }
   .auth-input::placeholder { color: var(--text-faint); }
-
-  .auth-btn {
-    width: 100%;
-    padding: 13px;
-    background: var(--orange);
-    color: white;
-    border: none;
-    border-radius: var(--radius-sm);
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 15px;
-    font-weight: 700;
-    cursor: pointer;
-    margin-bottom: 12px;
-    transition: opacity 0.15s;
-  }
-
+  .auth-btn { width: 100%; padding: 13px; background: var(--orange); color: white; border: none; border-radius: var(--radius-sm); font-family: 'Space Grotesk', sans-serif; font-size: 15px; font-weight: 700; cursor: pointer; margin-bottom: 12px; transition: opacity 0.15s; }
   .auth-btn:hover { opacity: 0.9; }
   .auth-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-
-  .auth-switch {
-    text-align: center;
-    font-size: 13px;
-    color: var(--text-muted);
-  }
-
-  .auth-switch a {
-    color: var(--orange);
-    cursor: pointer;
-    text-decoration: none;
-  }
-
-  .auth-error {
-    background: rgba(255,80,80,0.1);
-    border: 1px solid rgba(255,80,80,0.25);
-    color: #FF7070;
-    font-size: 13px;
-    padding: 10px 12px;
-    border-radius: var(--radius-sm);
-    margin-bottom: 12px;
-    display: none;
-  }
-
+  .auth-switch { text-align: center; font-size: 13px; color: var(--text-muted); }
+  .auth-switch a { color: var(--orange); cursor: pointer; text-decoration: none; }
+  .auth-error { background: rgba(255,80,80,0.1); border: 1px solid rgba(255,80,80,0.25); color: #FF7070; font-size: 13px; padding: 10px 12px; border-radius: var(--radius-sm); margin-bottom: 12px; display: none; }
   .auth-error.visible { display: block; }
-
-  .user-pill {
-    font-size: 12px;
-    color: var(--text-muted);
-    background: var(--surface);
-    border: 1px solid var(--border-strong);
-    padding: 5px 12px;
-    border-radius: 20px;
-    cursor: pointer;
-    white-space: nowrap;
-    font-family: 'Inter', sans-serif;
-    display: none;
-  }
-
-  .checking-state {
-    text-align: center;
-    padding: 4rem 1rem;
-    color: var(--text-muted);
-    font-size: 14px;
-  }
-
-
+  .user-pill { font-size: 12px; color: var(--text-muted); background: var(--surface); border: 1px solid var(--border-strong); padding: 5px 12px; border-radius: 20px; cursor: pointer; white-space: nowrap; font-family: 'Inter', sans-serif; display: none; }
+  .checking-state { text-align: center; padding: 4rem 1rem; color: var(--text-muted); font-size: 14px; }
   @media (max-width: 580px) {
     .hero { padding: 2.5rem 1.25rem 2rem; }
     .hero h1 { font-size: 30px; }
@@ -628,7 +131,7 @@
 <div class="checking-state" id="checkingState">Checking your session...</div>
 
 <div class="auth-wrapper" id="authWrapper">
-  <!-- NORMAL LOGIN -->
+  <!-- SIGN IN / SIGN UP -->
   <div class="auth-card" id="loginCard">
     <div class="auth-title">Welcome to NoCap AI</div>
     <div class="auth-sub" id="authSub">Sign in to get your free uses</div>
@@ -636,18 +139,17 @@
     <input type="email" class="auth-input" id="authEmail" placeholder="Email address">
     <input type="password" class="auth-input" id="authPassword" placeholder="Password">
     <button class="auth-btn" id="authBtn" onclick="handleAuth()">Sign in</button>
-    <div style="text-align:center; margin-bottom: 10px;">
+    <div style="text-align:center; margin-bottom:10px;">
       <a onclick="showForgotPassword()" style="font-size:13px; color:var(--text-muted); cursor:pointer;">Forgot password?</a>
     </div>
     <div class="auth-switch" id="authSwitch">Don't have an account? <a onclick="toggleAuthMode()">Sign up</a></div>
-    <div style="text-align:center; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border);">
+    <div style="text-align:center; margin-top:1rem; padding-top:1rem; border-top:1px solid var(--border);">
       <a href="/legal.html" style="font-size:11px; color:var(--text-faint);">Terms of Service</a>
       <span style="font-size:11px; color:var(--text-faint);"> · </span>
       <a href="/legal.html" style="font-size:11px; color:var(--text-faint);">Privacy Policy</a>
     </div>
   </div>
-
-  <!-- SET NEW PASSWORD (shown after clicking reset link) -->
+  <!-- SET NEW PASSWORD -->
   <div class="auth-card" id="resetCard" style="display:none;">
     <div class="auth-title">Set new password</div>
     <div class="auth-sub">Choose a new password for your account</div>
@@ -665,7 +167,6 @@
 </div>
 
 <div class="tools-wrapper hidden" id="toolsWrapper">
-
   <div class="tool-tabs">
     <div class="tool-tab active" id="tab-roast" onclick="selectTool('roast')">
       <div class="tool-used-indicator" id="ind-roast"></div>
@@ -686,17 +187,14 @@
       <div class="tool-desc">Professional complaint letters that actually get results</div>
     </div>
   </div>
-
   <div class="input-card">
     <div class="input-label" id="inputLabel">What are we roasting?</div>
     <textarea class="main-textarea" id="mainInput" placeholder="Paste your website URL, describe your business, or drop your startup pitch..."></textarea>
   </div>
-
   <button class="generate-btn" id="generateBtn" onclick="generate()">
     <span id="btnEmoji">🔥</span>
     <span id="btnLabel">Roast it</span>
   </button>
-
   <div class="loading-state" id="loadingState">
     <div class="loading-dots">
       <div class="loading-dot"></div>
@@ -705,7 +203,6 @@
     </div>
     <p class="loading-text" id="loadingText">Getting brutally honest about your business...</p>
   </div>
-
   <div class="result-card" id="resultCard">
     <div class="result-header">
       <span class="verdict-badge badge-roast" id="verdictBadge">🔥 Roasted</span>
@@ -716,43 +213,42 @@
       <button class="try-again-btn" onclick="resetInput()">Try another</button>
     </div>
   </div>
-
 </div>
 
-<div class="paywall-overlay" id="forgotOverlay">
-  <div class="paywall-modal">
-    <span class="paywall-emoji">🔑</span>
+<!-- FORGOT PASSWORD MODAL -->
+<div class="overlay" id="forgotOverlay">
+  <div class="modal">
+    <span class="modal-emoji">🔑</span>
     <h3>Reset your password</h3>
     <p>Enter your email and we'll send you a link to reset your password.</p>
     <div class="auth-error" id="forgotError"></div>
-    <div id="forgotSuccess" style="display:none; background:rgba(74,222,128,0.1); border:1px solid rgba(74,222,128,0.25); color:#4ADE80; font-size:13px; padding:10px 12px; border-radius:var(--radius-sm); margin-bottom:12px;">
-      Check your email for a reset link!
-    </div>
+    <div class="modal-success" id="forgotSuccess">Check your email for a reset link!</div>
     <input type="email" class="auth-input" id="forgotEmail" placeholder="Your email address" style="margin-bottom:12px;">
-    <button class="paywall-cta" id="forgotBtn" onclick="sendResetEmail()">Send reset link</button>
-    <button class="paywall-skip" onclick="hideForgotPassword()">Cancel</button>
+    <button class="modal-cta" id="forgotBtn" onclick="sendResetEmail()">Send reset link</button>
+    <button class="modal-skip" onclick="hideForgotPassword()">Cancel</button>
   </div>
 </div>
 
-
-  <div class="paywall-modal">
-    <span class="paywall-emoji">🔓</span>
+<!-- PAYWALL MODAL -->
+<div class="overlay" id="paywallOverlay">
+  <div class="modal">
+    <span class="modal-emoji">🔓</span>
     <h3>You've had your free taste</h3>
     <p>Upgrade to NoCap Pro for unlimited roasts, idea ratings, and fight-my-corner letters.</p>
-    <div class="paywall-price">$7</div>
-    <div class="paywall-period">per month · cancel anytime</div>
-    <ul class="paywall-features">
+    <div class="modal-price">$7</div>
+    <div class="modal-period">per month · cancel anytime</div>
+    <ul class="modal-features">
       <li>Unlimited uses of all 3 tools</li>
       <li>Full detailed responses every time</li>
       <li>All future tools included</li>
       <li>Cancel anytime, no questions asked</li>
     </ul>
-    <button class="paywall-cta" onclick="window.open('https://buy.stripe.com/5kQ3cogMlcF86Y04YFb7y03','_blank')">Upgrade to Pro — $7/month</button>
-    <button class="paywall-skip" onclick="hidePaywall()">Maybe later</button>
+    <button class="modal-cta" onclick="window.open('https://buy.stripe.com/5kQ3cogMlcF86Y04YFb7y03','_blank')">Upgrade to Pro — $7/month</button>
+    <button class="modal-skip" onclick="hidePaywall()">Maybe later</button>
   </div>
 </div>
 
-<footer>NoCap AI © 2026 · Built for people who can handle the truth</footer>
+<footer>NoCap AI © 2026 · Built for people who can handle the truth · <a href="/legal.html" style="color:var(--text-faint);">Legal</a></footer>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
@@ -765,6 +261,7 @@
   let isSignUp = false;
   let currentUser = null;
   let profile = null;
+  let recoveryMode = false;
 
   const config = {
     roast: {
@@ -774,16 +271,16 @@
       loading: 'Getting brutally honest about your business...',
       badge: 'badge-roast', badgeText: '🔥 Roasted',
       usedField: 'roast_used',
-      prompt: (input) => `You are a brutally honest, witty business critic. Your job is to help entrepreneurs by telling them the hard truth about their business. Roast this business or idea thoroughly. Point out every weakness — the copy, the positioning, the product, the pricing, the target market, the execution. Be specific, not vague. Use bold section headers to structure your response. End with a "Fix List" of exactly 5 things they should change immediately, ordered by importance.\n\nHere is the business/idea to roast:\n${input}`
+      prompt: (input) => `You are a brutally honest, witty business critic. Roast this business or idea thoroughly. Point out every weakness — copy, positioning, product, pricing, target market, execution. Be specific. Use bold section headers. End with a "Fix List" of exactly 5 things to change immediately.\n\nBusiness/idea to roast:\n${input}`
     },
     rate: {
       label: 'Describe your idea',
-      placeholder: 'Tell me your business idea. What is it, who is it for, and how does it make money?',
+      placeholder: 'Tell me your business idea. What is it, who is it for, how does it make money?',
       emoji: '⚡', btnLabel: 'Rate it',
       loading: 'Running the numbers on your idea...',
       badge: 'badge-rate', badgeText: '⚡ Verdict',
       usedField: 'rate_used',
-      prompt: (input) => `You are a brutally honest startup evaluator who has assessed thousands of business ideas. Rate this idea with genuine analysis. Use bold headers for each section: Market Size (how big is the real addressable market?), Competition (who already does this, and how saturated is it?), Main Risks (the 3 most likely things that will kill this), Founder Advantage (why would THIS person specifically win?), and Viability Score (give a score out of 10 with one sharp sentence of reasoning). Be direct and specific. No fluff.\n\nIdea to rate:\n${input}`
+      prompt: (input) => `You are a brutally honest startup evaluator. Rate this idea with genuine analysis. Use bold headers: Market Size, Competition, Main Risks, Founder Advantage, Viability Score (X/10 with one sentence). Be direct. No fluff.\n\nIdea:\n${input}`
     },
     fight: {
       label: 'What happened?',
@@ -792,12 +289,11 @@
       loading: 'Building your case...',
       badge: 'badge-fight', badgeText: '⚖️ Filed',
       usedField: 'fight_used',
-      prompt: (input) => `You are an expert at writing assertive, professional letters that get results. Write a complete, ready-to-send letter for this situation. Structure it with: a clear subject line, professional opening, firm factual body paragraph(s) that reference relevant consumer rights or legal obligations where applicable, a specific clear demand with a reasonable deadline (e.g. 14 days), and a professional closing. Be assertive and firm without being rude. Make it feel like it was written by someone who knows their rights and means business.\n\nSituation:\n${input}`
+      prompt: (input) => `You are an expert at writing assertive professional letters that get results. Write a complete ready-to-send letter. Include: clear subject line, professional opening, firm body referencing consumer rights where applicable, specific demands with a 14-day deadline, professional closing.\n\nSituation:\n${input}`
     }
   };
 
   // ---------- AUTH ----------
-
   function toggleAuthMode() {
     isSignUp = !isSignUp;
     document.getElementById('authBtn').textContent = isSignUp ? 'Sign up' : 'Sign in';
@@ -805,7 +301,7 @@
     document.getElementById('authSwitch').innerHTML = isSignUp
       ? 'Already have an account? <a onclick="toggleAuthMode()">Sign in</a>'
       : "Don't have an account? <a onclick=\"toggleAuthMode()\">Sign up</a>";
-    hideAuthError();
+    document.getElementById('authError').className = 'auth-error';
   }
 
   function showAuthError(msg) {
@@ -814,33 +310,20 @@
     el.className = 'auth-error visible';
   }
 
-  function hideAuthError() {
-    document.getElementById('authError').className = 'auth-error';
-  }
-
   async function handleAuth() {
     const email = document.getElementById('authEmail').value.trim();
     const password = document.getElementById('authPassword').value;
-    if (!email || !password) {
-      showAuthError('Please enter both email and password.');
-      return;
-    }
-    if (password.length < 6) {
-      showAuthError('Password must be at least 6 characters.');
-      return;
-    }
+    if (!email || !password) { showAuthError('Please enter both email and password.'); return; }
+    if (password.length < 6) { showAuthError('Password must be at least 6 characters.'); return; }
 
-    hideAuthError();
+    document.getElementById('authError').className = 'auth-error';
     document.getElementById('authBtn').disabled = true;
     document.getElementById('authBtn').textContent = isSignUp ? 'Signing up...' : 'Signing in...';
 
     try {
-      let result;
-      if (isSignUp) {
-        result = await sb.auth.signUp({ email, password });
-      } else {
-        result = await sb.auth.signInWithPassword({ email, password });
-      }
+      const result = isSignUp
+        ? await sb.auth.signUp({ email, password })
+        : await sb.auth.signInWithPassword({ email, password });
 
       if (result.error) throw result.error;
 
@@ -850,9 +333,7 @@
         document.getElementById('authBtn').textContent = 'Sign up';
         return;
       }
-
       await onLoggedIn(result.data.user);
-
     } catch (err) {
       showAuthError(err.message || 'Something went wrong.');
       document.getElementById('authBtn').disabled = false;
@@ -862,14 +343,15 @@
 
   async function logout() {
     await sb.auth.signOut();
-    currentUser = null;
-    profile = null;
+    currentUser = null; profile = null; recoveryMode = false;
     showAuthScreen();
   }
 
   function showAuthScreen() {
     document.getElementById('checkingState').style.display = 'none';
     document.getElementById('authWrapper').className = 'auth-wrapper visible';
+    document.getElementById('loginCard').style.display = 'block';
+    document.getElementById('resetCard').style.display = 'none';
     document.getElementById('hero').className = 'hero hidden';
     document.getElementById('toolsWrapper').className = 'tools-wrapper hidden';
     document.getElementById('userPill').style.display = 'none';
@@ -879,22 +361,27 @@
     document.getElementById('authBtn').textContent = isSignUp ? 'Sign up' : 'Sign in';
   }
 
+  function showResetScreen() {
+    document.getElementById('checkingState').style.display = 'none';
+    document.getElementById('authWrapper').className = 'auth-wrapper visible';
+    document.getElementById('loginCard').style.display = 'none';
+    document.getElementById('resetCard').style.display = 'block';
+    document.getElementById('hero').className = 'hero hidden';
+    document.getElementById('toolsWrapper').className = 'tools-wrapper hidden';
+    document.getElementById('userPill').style.display = 'none';
+    document.getElementById('usesBadge').style.display = 'none';
+    document.getElementById('upgradeNavBtn').style.display = 'none';
+  }
+
   async function onLoggedIn(user) {
+    if (recoveryMode) return;
     currentUser = user;
-
     let { data, error } = await sb.from('nocap_users').select('*').eq('id', user.id).single();
-
     if (error || !data) {
-      const { data: inserted, error: insertErr } = await sb
-        .from('nocap_users')
-        .insert({ id: user.id, email: user.email })
-        .select()
-        .single();
+      const { data: inserted } = await sb.from('nocap_users').insert({ id: user.id, email: user.email }).select().single();
       data = inserted;
     }
-
     profile = data;
-
     document.getElementById('checkingState').style.display = 'none';
     document.getElementById('authWrapper').className = 'auth-wrapper';
     document.getElementById('hero').className = 'hero';
@@ -903,30 +390,19 @@
     document.getElementById('userPill').textContent = user.email + ' · Log out';
     document.getElementById('usesBadge').style.display = 'inline-block';
     document.getElementById('upgradeNavBtn').style.display = 'inline-block';
-
     updateBadge();
     selectTool('roast');
   }
 
   async function checkSession() {
-    // Listen for auth state changes including PASSWORD_RECOVERY
     sb.auth.onAuthStateChange(async (event, session) => {
       if (event === 'PASSWORD_RECOVERY') {
-        // Show the set new password form
-        document.getElementById('checkingState').style.display = 'none';
-        document.getElementById('authWrapper').className = 'auth-wrapper visible';
-        document.getElementById('loginCard').style.display = 'none';
-        document.getElementById('resetCard').style.display = 'block';
-        document.getElementById('hero').className = 'hero hidden';
-        document.getElementById('toolsWrapper').className = 'tools-wrapper hidden';
+        recoveryMode = true;
+        showResetScreen();
         return;
       }
-      if (event === 'SIGNED_IN' && session) {
-        // Only trigger if we're not already logged in
-        const resetCardVisible = document.getElementById('resetCard').style.display === 'block';
-        if (!resetCardVisible && !currentUser) {
-          await onLoggedIn(session.user);
-        }
+      if (event === 'SIGNED_IN' && session && !recoveryMode && !currentUser) {
+        await onLoggedIn(session.user);
       }
     });
 
@@ -959,24 +435,24 @@
     document.getElementById('resetBtn').textContent = 'Updating...';
 
     const { error } = await sb.auth.updateUser({ password: newPass });
-
     if (error) {
       errorEl.textContent = error.message;
       errorEl.className = 'auth-error visible';
       document.getElementById('resetBtn').disabled = false;
       document.getElementById('resetBtn').textContent = 'Set new password';
     } else {
-      // Password updated — log them in
+      recoveryMode = false;
       const { data } = await sb.auth.getSession();
       if (data.session) {
         window.location.hash = '';
         await onLoggedIn(data.session.user);
+      } else {
+        showAuthScreen();
       }
     }
   }
 
-  // ---------- USAGE / BADGE ----------
-
+  // ---------- BADGE ----------
   function updateBadge() {
     if (!profile) return;
     if (profile.is_pro) {
@@ -987,8 +463,7 @@
     }
     let left = 0;
     ['roast','rate','fight'].forEach(t => {
-      const used = profile[config[t].usedField];
-      if (used) {
+      if (profile[config[t].usedField]) {
         document.getElementById('ind-' + t).classList.add('show');
       } else {
         left++;
@@ -999,7 +474,6 @@
   }
 
   // ---------- TOOLS ----------
-
   function selectTool(tool) {
     activeTool = tool;
     document.querySelectorAll('.tool-tab').forEach(t => t.classList.remove('active'));
@@ -1023,13 +497,8 @@
       setTimeout(() => { ta.style.boxShadow = ''; }, 2000);
       return;
     }
-
     const c = config[activeTool];
-
-    if (!profile.is_pro && profile[c.usedField]) {
-      showPaywall();
-      return;
-    }
+    if (!profile.is_pro && profile[c.usedField]) { showPaywall(); return; }
 
     document.getElementById('generateBtn').disabled = true;
     document.getElementById('loadingState').className = 'loading-state visible';
@@ -1040,26 +509,18 @@
       const response = await fetch('/api/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prompt: c.prompt(input), tool: activeTool, input: input })
+        body: JSON.stringify({ prompt: c.prompt(input), tool: activeTool, input })
       });
-
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || 'Something went wrong');
-
       resultText = data.text;
 
       if (!profile.is_pro) {
         const update = {};
         update[c.usedField] = true;
-        const { data: updated } = await sb
-          .from('nocap_users')
-          .update(update)
-          .eq('id', currentUser.id)
-          .select()
-          .single();
+        const { data: updated } = await sb.from('nocap_users').update(update).eq('id', currentUser.id).select().single();
         if (updated) profile = updated;
       }
-
       updateBadge();
 
       const badge = document.getElementById('verdictBadge');
@@ -1076,24 +537,19 @@
       const cursor = document.createElement('span');
       cursor.className = 'cursor-blink';
       body.appendChild(cursor);
-
       function typeNext() {
         if (i < resultText.length) {
           body.insertBefore(document.createTextNode(resultText[i]), cursor);
           i++;
           setTimeout(typeNext, speed);
-        } else {
-          cursor.remove();
-        }
+        } else { cursor.remove(); }
       }
       typeNext();
-
     } catch (err) {
       document.getElementById('loadingState').className = 'loading-state';
       document.getElementById('resultBody').textContent = 'Something went wrong — please try again.';
       document.getElementById('resultCard').className = 'result-card visible';
     }
-
     document.getElementById('generateBtn').disabled = false;
   }
 
@@ -1112,26 +568,22 @@
     resultText = '';
   }
 
+  // ---------- MODALS ----------
   function showForgotPassword() {
-    document.getElementById('forgotOverlay').className = 'paywall-overlay visible';
     document.getElementById('forgotError').className = 'auth-error';
     document.getElementById('forgotSuccess').style.display = 'none';
     document.getElementById('forgotEmail').value = '';
+    document.getElementById('forgotOverlay').className = 'overlay visible';
   }
-
-  function hideForgotPassword() {
-    document.getElementById('forgotOverlay').className = 'paywall-overlay';
-  }
+  function hideForgotPassword() { document.getElementById('forgotOverlay').className = 'overlay'; }
 
   async function sendResetEmail() {
     const email = document.getElementById('forgotEmail').value.trim();
     if (!email) {
-      const el = document.getElementById('forgotError');
-      el.textContent = 'Please enter your email address.';
-      el.className = 'auth-error visible';
+      document.getElementById('forgotError').textContent = 'Please enter your email address.';
+      document.getElementById('forgotError').className = 'auth-error visible';
       return;
     }
-
     document.getElementById('forgotBtn').disabled = true;
     document.getElementById('forgotBtn').textContent = 'Sending...';
     document.getElementById('forgotError').className = 'auth-error';
@@ -1141,27 +593,19 @@
     });
 
     if (error) {
-      const el = document.getElementById('forgotError');
-      el.textContent = error.message;
-      el.className = 'auth-error visible';
+      document.getElementById('forgotError').textContent = error.message;
+      document.getElementById('forgotError').className = 'auth-error visible';
     } else {
       document.getElementById('forgotSuccess').style.display = 'block';
     }
-
     document.getElementById('forgotBtn').disabled = false;
     document.getElementById('forgotBtn').textContent = 'Send reset link';
   }
 
-  function showPaywall() {
-    document.getElementById('paywallOverlay').className = 'paywall-overlay visible';
-  }
-
-  function hidePaywall() {
-    document.getElementById('paywallOverlay').className = 'paywall-overlay';
-  }
+  function showPaywall() { document.getElementById('paywallOverlay').className = 'overlay visible'; }
+  function hidePaywall() { document.getElementById('paywallOverlay').className = 'overlay'; }
 
   checkSession();
 </script>
-
 </body>
 </html>
