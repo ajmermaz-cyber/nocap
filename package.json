@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "stripe": "^14.0.0",
-    "@supabase/supabase-js": "^2.0.0"
+    "@supabase/supabase-js": "^2.0.0",
+    "jsdom": "^24.0.0"
   }
 }
