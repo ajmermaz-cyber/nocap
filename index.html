@@ -909,19 +909,26 @@
   }
 
   async function checkSession() {
-    // Check if this is a password reset redirect
-    const hash = window.location.hash;
-    if (hash.includes('type=recovery') || hash.includes('type=email_change') || hash.includes('recovery')) {
-      // Show the set new password form
-      const { data } = await sb.auth.getSession();
-      if (data.session) {
+    // Listen for auth state changes including PASSWORD_RECOVERY
+    sb.auth.onAuthStateChange(async (event, session) => {
+      if (event === 'PASSWORD_RECOVERY') {
+        // Show the set new password form
         document.getElementById('checkingState').style.display = 'none';
         document.getElementById('authWrapper').className = 'auth-wrapper visible';
         document.getElementById('loginCard').style.display = 'none';
         document.getElementById('resetCard').style.display = 'block';
+        document.getElementById('hero').className = 'hero hidden';
+        document.getElementById('toolsWrapper').className = 'tools-wrapper hidden';
         return;
       }
-    }
+      if (event === 'SIGNED_IN' && session) {
+        // Only trigger if we're not already logged in
+        const resetCardVisible = document.getElementById('resetCard').style.display === 'block';
+        if (!resetCardVisible && !currentUser) {
+          await onLoggedIn(session.user);
+        }
+      }
+    });
 
     const { data } = await sb.auth.getSession();
     if (data.session && data.session.user) {
@@ -1130,7 +1137,7 @@
     document.getElementById('forgotError').className = 'auth-error';
 
     const { error } = await sb.auth.resetPasswordForEmail(email, {
-      redirectTo: 'https://nocap-dun.vercel.app/#recovery'
+      redirectTo: 'https://nocap-dun.vercel.app'
     });
 
     if (error) {
